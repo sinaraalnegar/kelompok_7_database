@@ -1,18 +1,1 @@
-# Aturan Transformasi Data (MySQL ke Neo4j)
 
-Proses pembersihan dan penyesuaian struktur data dari 3 tabel terpilih database `madiun_ecomaps_v2` (`users`, `kategori_lokasi`, dan `lokasi`) sebelum dimuat ke Neo4j:
-
-1. **Penghapusan Kolom Sensitif & Nilai NULL:**
-   - Kolom `password` pada tabel `users` tidak ikut diekspor maupun dimuat ke Neo4j demi keamanan.
-   - Kolom bernilai `NULL` tidak disimpan sebagai properti node (meliputi kolom `avatar` pada `:User`, serta `catatan_admin`, `verified_by`, dan `verified_at` pada lokasi `id: 5` yang masih berstatus `pending`).
-
-2. **Konversi Tipe Data Fisik:**
-   - `id` dan `total_ulasan` dikonversi menjadi tipe `Integer` (`toInteger()`).
-   - `latitude`, `longitude`, dan `rating_rata_rata` dikonversi menjadi tipe `Float` (`toFloat()`), serta ditambahkan properti spasial `koordinat` menggunakan fungsi `point()`.
-   - `is_active` (`1`) dikonversi menjadi tipe `Boolean` (`true`).
-   - `created_at`, `updated_at`, dan `verified_at` dikonversi menjadi tipe `DateTime` (`datetime()`).
-
-3. **Transformasi Foreign Key Menjadi Relationship Graf:**
-   - Kolom `mitra_id` pada `lokasi` dihapus dari properti node dan diubah menjadi relasi `(:User)-[:MENGELOLA]->(:Lokasi)` (5 relasi).
-   - Kolom `kategori_id` pada `lokasi` dihapus dari properti node dan diubah menjadi relasi `(:Lokasi)-[:TERMASUK_KATEGORI]->(:KategoriLokasi)` (5 relasi).
-   - Kolom `verified_by` pada `lokasi` yang sudah disetujui diubah menjadi relasi `(:User)-[:MEMVERIFIKASI]->(:Lokasi)` (4 relasi) dengan memindahkan `verified_at` dan `catatan_admin` sebagai properti pada relasi tersebut.

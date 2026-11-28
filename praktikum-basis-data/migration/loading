@@ -1,1 +1,52 @@
+// 1. Load Node :User (5 node)
+LOAD CSV WITH HEADERS FROM 'file:///users.csv' AS row
+MERGE (u:User {id: toInteger(row.id)})
+SET u.nama = row.nama,
+    u.email = row.email,
+    u.no_hp = row.no_hp,
+    u.role = row.role,
+    u.is_active = (row.is_active = '1'),
+    u.created_at = datetime(replace(row.created_at, ' ', 'T')),
+    u.updated_at = datetime(replace(row.updated_at, ' ', 'T'));
 
+// 2. Load Node :KategoriLokasi (4 node)
+LOAD CSV WITH HEADERS FROM 'file:///kategori_lokasi.csv' AS row
+MERGE (k:KategoriLokasi {id: toInteger(row.id)})
+SET k.nama_kategori = row.nama_kategori,
+    k.slug = row.slug,
+    k.ikon_marker = row.ikon_marker,
+    k.deskripsi = row.deskripsi,
+    k.created_at = datetime(replace(row.created_at, ' ', 'T')),
+    k.updated_at = datetime(replace(row.updated_at, ' ', 'T'));
+
+// 3. Load Node :Lokasi (5 node) & Relationship (14 relasi)
+LOAD CSV WITH HEADERS FROM 'file:///lokasi.csv' AS row
+MERGE (l:Lokasi {id: toInteger(row.id)})
+SET l.nama_lokasi = row.nama_lokasi,
+    l.slug = row.slug,
+    l.deskripsi = row.deskripsi,
+    l.alamat = row.alamat,
+    l.kecamatan = row.kecamatan,
+    l.latitude = toFloat(row.latitude),
+    l.longitude = toFloat(row.longitude),
+    l.koordinat = point({latitude: toFloat(row.latitude), longitude: toFloat(row.longitude)}),
+    l.jam_operasional = row.jam_operasional,
+    l.kontak_wa = row.kontak_wa,
+    l.status_verifikasi = row.status_verifikasi,
+    l.status_operasional = row.status_operasional,
+    l.rating_rata_rata = toFloat(row.rating_rata_rata),
+    l.total_ulasan = toInteger(row.total_ulasan),
+    l.created_at = datetime(replace(row.created_at, ' ', 'T')),
+    l.updated_at = datetime(replace(row.updated_at, ' ', 'T'))
+WITH l, row
+MATCH (mitra:User {id: toInteger(row.mitra_id)})
+MERGE (mitra)-[:MENGELOLA]->(l)
+WITH l, row
+MATCH (k:KategoriLokasi {id: toInteger(row.kategori_id)})
+MERGE (l)-[:TERMASUK_KATEGORI]->(k)
+WITH l, row
+WHERE row.verified_by IS NOT NULL AND row.verified_by <> 'NULL'
+MATCH (admin:User {id: toInteger(row.verified_by)})
+MERGE (admin)-[v:MEMVERIFIKASI]->(l)
+SET v.verified_at = datetime(replace(row.verified_at, ' ', 'T')),
+    v.catatan_admin = row.catatan_admin;

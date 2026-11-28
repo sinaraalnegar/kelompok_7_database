@@ -1,1 +1,634 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.3-3.fc45
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Nov 25, 2026 at 02:24 AM
+-- Server version: 12.3.2-MariaDB
+-- PHP Version: 8.5.13
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `madiun_ecomaps_v2`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `favorit_lokasi`
+--
+
+CREATE TABLE `favorit_lokasi` (
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `favorit_lokasi`
+--
+
+INSERT INTO `favorit_lokasi` (`user_id`, `lokasi_id`, `created_at`) VALUES
+(4, 1, '2026-11-24 15:16:21'),
+(4, 2, '2026-11-24 15:16:21'),
+(5, 3, '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `foto_lokasi`
+--
+
+CREATE TABLE `foto_lokasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `keterangan` varchar(150) DEFAULT NULL,
+  `is_utama` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `foto_lokasi`
+--
+
+INSERT INTO `foto_lokasi` (`id`, `lokasi_id`, `file_path`, `keterangan`, `is_utama`, `created_at`, `updated_at`) VALUES
+(1, 1, 'lokasi/bank-sampah-melati-1.webp', 'Area penimbangan dan pemilahan sampah anorganik', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 1, 'lokasi/bank-sampah-melati-2.webp', 'Papan daftar harga setor sampah terbaru', 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 2, 'lokasi/kopi-tumbler-pahlawan-1.webp', 'Bar seduh kopi dengan sudut isi ulang air minum', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 3, 'lokasi/madiun-thrift-hub-1.webp', 'Rak koleksi pakaian preloved terkurasi', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(5, 4, 'lokasi/drop-point-jelantah-1.webp', 'Jerigen penampungan minyak jelantah dan kotak e-waste', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(6, 5, 'lokasi/bank-sampah-manguharjo-1.webp', 'Tampak depan pos bank sampah', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jenis_sampah`
+--
+
+CREATE TABLE `jenis_sampah` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `kode_sampah` varchar(20) NOT NULL,
+  `nama_jenis` varchar(80) NOT NULL,
+  `kelompok` enum('plastik','kertas','logam','kaca','organik','jelantah','elektronik','tekstil') NOT NULL,
+  `satuan_default` enum('kg','liter','pcs') NOT NULL DEFAULT 'kg',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `jenis_sampah`
+--
+
+INSERT INTO `jenis_sampah` (`id`, `kode_sampah`, `nama_jenis`, `kelompok`, `satuan_default`, `created_at`, `updated_at`) VALUES
+(1, 'PLST-PET', 'Botol Plastik PET Bening', 'plastik', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 'PLST-HDPE', 'Plastik Keras & Tutup Botol HDPE', 'plastik', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 'KRTS-KRDS', 'Kardus Cokelat Kering', 'kertas', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 'KRTS-HVS', 'Kertas HVS & Buku Bekas', 'kertas', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(5, 'LGM-ALM', 'Kaleng Aluminium Minuman', 'logam', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(6, 'JLNTH-01', 'Minyak Jelantah Rumah Tangga', 'jelantah', 'liter', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(7, 'ELK-KBL', 'Kabel, Charger & Elektronik Kecil', 'elektronik', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(8, 'TKS-PKN', 'Pakaian Layak Pakai / Tekstil', 'tekstil', 'kg', '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kategori_lokasi`
+--
+
+CREATE TABLE `kategori_lokasi` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `nama_kategori` varchar(60) NOT NULL,
+  `slug` varchar(80) NOT NULL,
+  `ikon_marker` varchar(100) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `kategori_lokasi`
+--
+
+INSERT INTO `kategori_lokasi` (`id`, `nama_kategori`, `slug`, `ikon_marker`, `deskripsi`, `created_at`, `updated_at`) VALUES
+(1, 'Bank Sampah', 'bank-sampah', 'marker-recycle-green', 'Unit penimbangan dan tabungan sampah anorganik terpilah dari rumah tangga.', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 'Kafe & Toko Zero-Waste', 'zero-waste-store', 'marker-leaf-emerald', 'Kedai atau toko curah yang mendukung penggunaan wadah guna ulang dan diskon tumbler.', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 'Thrift Shop & Preloved', 'thrift-shop', 'marker-hanger-amber', 'Toko pakaian dan barang bekas layak pakai untuk mendukung fesyen berkelanjutan.', '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 'Drop Box E-Waste & Jelantah', 'drop-box-ewaste', 'marker-bolt-blue', 'Titik pengumpulan khusus minyak jelantah dan limbah elektronik kecil.', '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `konten_edukasi`
+--
+
+CREATE TABLE `konten_edukasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `penulis_id` bigint(20) UNSIGNED NOT NULL,
+  `judul` varchar(180) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `ringkasan` varchar(255) NOT NULL,
+  `isi_konten` longtext NOT NULL,
+  `gambar_sampul` varchar(255) DEFAULT NULL,
+  `is_published` tinyint(1) NOT NULL DEFAULT 0,
+  `published_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `konten_edukasi`
+--
+
+INSERT INTO `konten_edukasi` (`id`, `penulis_id`, `judul`, `slug`, `ringkasan`, `isi_konten`, `gambar_sampul`, `is_published`, `published_at`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Cara Memilah Sampah Plastik Rumah Tangga Sebelum Disetor ke Bank Sampah', 'cara-memilah-sampah-plastik-rumah-tangga', 'Panduan praktis memisahkan kode plastik PET dan HDPE agar bernilai jual lebih tinggi saat ditimbang.', 'Langkah pertama sebelum menyetor botol plastik ke bank sampah adalah mengosongkan sisa cairan, melepas label kemasan, memisahkan tutup botol (jenis HDPE) dari badan botol (jenis PET), lalu meremukkannya agar hemat ruang penyimpanan di rumah.', 'edukasi/pilah-plastik.webp', 1, '2026-11-20 01:00:00', '2026-11-24 15:41:59', '2026-11-24 15:41:59'),
+(2, 1, 'Jangan Buang Minyak Jelantah ke Saluran Air: Ini Dampak dan Solusinya di Madiun', 'solusi-pengelolaan-minyak-jelantah-madiun', 'Satu liter minyak jelantah dapat mencemari ribuan liter air bersih. Simak cara menyimpannya untuk disetor ke drop point.', 'Minyak jelantah yang dibuang ke wastafel akan membeku di pipa dan mencemari aliran sungai. Dinginkan minyak bekas menggoreng, saring remah makanannya, simpan dalam botol tertutup rapat, lalu setorkan ke titik drop point jelantah terdekat di Kota Madiun.', 'edukasi/minyak-jelantah.webp', 1, '2026-11-21 02:00:00', '2026-11-24 15:41:59', '2026-11-24 15:41:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `laporan_lokasi`
+--
+
+CREATE TABLE `laporan_lokasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `pelapor_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `jenis_laporan` enum('tutup_permanen','pindah_alamat','harga_tidak_sesuai','promo_berakhir','lainnya') NOT NULL,
+  `deskripsi` text NOT NULL,
+  `status_penanganan` enum('baru','ditinjau','selesai','diabaikan') NOT NULL DEFAULT 'baru',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `laporan_lokasi`
+--
+
+INSERT INTO `laporan_lokasi` (`id`, `lokasi_id`, `pelapor_id`, `jenis_laporan`, `deskripsi`, `status_penanganan`, `created_at`, `updated_at`) VALUES
+(1, 1, 5, 'harga_tidak_sesuai', 'Di papan pengumuman lokasi tertulis harga kardus kering sudah naik menjadi Rp 2.000/kg per minggu ini.', 'baru', '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lokasi`
+--
+
+CREATE TABLE `lokasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `mitra_id` bigint(20) UNSIGNED NOT NULL,
+  `kategori_id` int(10) UNSIGNED NOT NULL,
+  `nama_lokasi` varchar(150) NOT NULL,
+  `slug` varchar(180) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `alamat` text NOT NULL,
+  `kecamatan` varchar(60) NOT NULL,
+  `latitude` decimal(10,8) NOT NULL,
+  `longitude` decimal(11,8) NOT NULL,
+  `jam_operasional` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`jam_operasional`)),
+  `kontak_wa` varchar(20) DEFAULT NULL,
+  `status_verifikasi` enum('pending','disetujui','perlu_revisi','ditolak') NOT NULL DEFAULT 'pending',
+  `status_operasional` enum('buka','tutup_sementara','tutup_permanen') NOT NULL DEFAULT 'buka',
+  `catatan_admin` text DEFAULT NULL,
+  `verified_by` bigint(20) UNSIGNED DEFAULT NULL,
+  `verified_at` timestamp NULL DEFAULT NULL,
+  `rating_rata_rata` decimal(3,2) NOT NULL DEFAULT 0.00,
+  `total_ulasan` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `lokasi`
+--
+
+INSERT INTO `lokasi` (`id`, `mitra_id`, `kategori_id`, `nama_lokasi`, `slug`, `deskripsi`, `alamat`, `kecamatan`, `latitude`, `longitude`, `jam_operasional`, `kontak_wa`, `status_verifikasi`, `status_operasional`, `catatan_admin`, `verified_by`, `verified_at`, `rating_rata_rata`, `total_ulasan`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, 'Bank Sampah Melati Taman', 'bank-sampah-melati-taman', 'Menerima setoran sampah plastik, kardus, kertas, dan kaleng logam dengan sistem buku tabungan maupun tunai langsung.', 'Jl. Salak No. 42, Kel. Taman', 'Taman', -7.63842000, 111.52415000, '{\"senin\":\"08:00-15:00\",\"selasa\":\"08:00-15:00\",\"rabu\":\"08:00-15:00\",\"kamis\":\"08:00-15:00\",\"jumat\":\"08:00-11:30\",\"sabtu\":\"08:00-14:00\",\"minggu\":\"Tutup\"}', '6281234560002', 'disetujui', 'buka', 'Lokasi dan dokumentasi foto terverifikasi.', 1, '2026-11-20 02:30:00', 4.50, 2, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 3, 2, 'Kedai Kopi Tumbler Pahlawan', 'kedai-kopi-tumbler-pahlawan', 'Kedai kopi lokal bebas sedotan plastik sekali pakai dengan potongan harga khusus bagi pelanggan yang membawa tumbler pribadi.', 'Jl. Pahlawan No. 88, Kel. Pangongangan', 'Kartoharjo', -7.62695000, 111.52368000, '{\"senin\":\"09:00-22:00\",\"selasa\":\"09:00-22:00\",\"rabu\":\"09:00-22:00\",\"kamis\":\"09:00-22:00\",\"jumat\":\"13:00-23:00\",\"sabtu\":\"09:00-23:00\",\"minggu\":\"09:00-22:00\"}', '6281234560003', 'disetujui', 'buka', 'Mitra aktif program Bring Your Own Tumbler.', 1, '2026-11-20 03:15:00', 5.00, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 3, 3, 'Madiun Preloved & Thrift Hub', 'madiun-preloved-thrift-hub', 'Kurasi pakaian preloved berkualitas serta layanan tukar tambah pakaian layak pakai menjadi voucher belanja.', 'Jl. Diponegoro No. 19, Kel. Oro-Oro Ombo', 'Manguharjo', -7.63118000, 111.51592000, '{\"senin\":\"10:00-20:00\",\"selasa\":\"10:00-20:00\",\"rabu\":\"10:00-20:00\",\"kamis\":\"10:00-20:00\",\"jumat\":\"13:00-20:30\",\"sabtu\":\"10:00-21:00\",\"minggu\":\"10:00-20:00\"}', '6281234560003', 'disetujui', 'buka', 'Data alamat dan titik koordinat sesuai.', 1, '2026-11-21 07:00:00', 5.00, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 2, 4, 'Drop Point Jelantah & E-Waste Kartoharjo', 'drop-point-jelantah-ewaste-kartoharjo', 'Titik penyetoran minyak jelantah rumah tangga berbayar serta drop-box donasi limbah kabel, charger, dan gawai rusak.', 'Jl. Dr. Sutomo No. 55, Kel. Kartoharjo', 'Kartoharjo', -7.62154000, 111.53120000, '{\"senin\":\"08:00-16:00\",\"selasa\":\"08:00-16:00\",\"rabu\":\"08:00-16:00\",\"kamis\":\"08:00-16:00\",\"jumat\":\"08:00-11:00\",\"sabtu\":\"08:00-13:00\",\"minggu\":\"Tutup\"}', '6281234560002', 'disetujui', 'buka', 'Fasilitas penampungan jelantah aman dan terverifikasi.', 1, '2026-11-22 04:20:00', 0.00, 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(5, 2, 1, 'Bank Sampah Hijau Manguharjo', 'bank-sampah-hijau-manguharjo', 'Unit bank sampah warga kelurahan Manguharjo yang fokus pada pemilahan plastik kemasan dan kertas bekas.', 'Jl. Hayam Wuruk No. 14, Kel. Manguharjo', 'Manguharjo', -7.62480000, 111.51230000, '{\"senin\":\"08:30-14:00\",\"selasa\":\"Tutup\",\"rabu\":\"08:30-14:00\",\"kamis\":\"Tutup\",\"jumat\":\"08:30-11:00\",\"sabtu\":\"08:30-14:00\",\"minggu\":\"Tutup\"}', '6281234560002', 'pending', 'buka', NULL, NULL, NULL, 0.00, 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promo_eco`
+--
+
+CREATE TABLE `promo_eco` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `judul_promo` varchar(120) NOT NULL,
+  `jenis_insentif` enum('diskon_persen','potongan_harga','poin_tukar','produk_gratis') NOT NULL,
+  `nilai_insentif` varchar(50) NOT NULL,
+  `syarat_ketentuan` text NOT NULL,
+  `tanggal_mulai` date NOT NULL,
+  `tanggal_selesai` date DEFAULT NULL,
+  `is_aktif` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `promo_eco`
+--
+
+INSERT INTO `promo_eco` (`id`, `lokasi_id`, `judul_promo`, `jenis_insentif`, `nilai_insentif`, `syarat_ketentuan`, `tanggal_mulai`, `tanggal_selesai`, `is_aktif`, `created_at`, `updated_at`) VALUES
+(1, 2, 'Diskon 15% Bawa Tumbler Sendiri', 'diskon_persen', '15%', 'Berlaku untuk pembelian semua menu kopi dan non-kopi dengan membawa tumbler pribadi minimal 350 ml.', '2026-11-01', '2026-12-31', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 3, 'Potongan Rp 5.000 Tanpa Kantong Belanja', 'potongan_harga', 'Rp 5.000', 'Berlaku untuk transaksi minimal Rp 50.000 dengan membawa tas belanja kain (totebag) sendiri.', '2026-11-01', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `riwayat_verifikasi`
+--
+
+CREATE TABLE `riwayat_verifikasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `admin_id` bigint(20) UNSIGNED NOT NULL,
+  `status_sebelumnya` varchar(30) DEFAULT NULL,
+  `status_baru` varchar(30) NOT NULL,
+  `catatan` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `riwayat_verifikasi`
+--
+
+INSERT INTO `riwayat_verifikasi` (`id`, `lokasi_id`, `admin_id`, `status_sebelumnya`, `status_baru`, `catatan`, `created_at`) VALUES
+(1, 1, 1, 'pending', 'disetujui', 'Dokumen lokasi, alamat Jl. Salak, dan foto area penimbangan valid.', '2026-11-24 15:16:21'),
+(2, 2, 1, 'pending', 'disetujui', 'Terverifikasi sebagai mitra kedai ramah lingkungan di Jl. Pahlawan.', '2026-11-24 15:16:21'),
+(3, 3, 1, 'pending', 'disetujui', 'Titik koordinat dan jam operasional sudah sesuai.', '2026-11-24 15:16:21'),
+(4, 4, 1, 'pending', 'disetujui', 'Fasilitas drop point jelantah dan e-waste memenuhi standar.', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) NOT NULL,
+  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` text DEFAULT NULL,
+  `payload` longtext NOT NULL,
+  `last_activity` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tarif_lokasi`
+--
+
+CREATE TABLE `tarif_lokasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `jenis_sampah_id` int(10) UNSIGNED NOT NULL,
+  `harga_beli` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `satuan` enum('kg','liter','pcs') NOT NULL DEFAULT 'kg',
+  `syarat_kondisi` varchar(200) DEFAULT NULL,
+  `is_tersedia` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `tarif_lokasi`
+--
+
+INSERT INTO `tarif_lokasi` (`id`, `lokasi_id`, `jenis_sampah_id`, `harga_beli`, `satuan`, `syarat_kondisi`, `is_tersedia`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 3200.00, 'kg', 'Label plastik dilepas, botol bersih dan diremukkan', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 1, 2, 2500.00, 'kg', 'Tutup botol dan wadah plastik keras terpisah dari label', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 1, 3, 1800.00, 'kg', 'Kardus kering, dilipat rapi, dan tidak terkena minyak', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 1, 4, 2000.00, 'kg', 'Kertas tidak basah dan bebas sampul plastik', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(5, 1, 5, 11500.00, 'kg', 'Kaleng bersih dan sudah dipipihkan', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(6, 4, 6, 5500.00, 'liter', 'Disaring dari sisa gorengan dan dikemas dalam botol tertutup', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(7, 4, 7, 0.00, 'kg', 'Layanan drop-off gratis (donasi daur ulang kabel, charger, HP rusak)', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(8, 3, 8, 0.00, 'kg', 'Tukar minimal 2 kg pakaian layak pakai dengan voucher diskon Rp 10.000', 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ulasan_lokasi`
+--
+
+CREATE TABLE `ulasan_lokasi` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `lokasi_id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `rating` tinyint(3) UNSIGNED NOT NULL CHECK (`rating` between 1 and 5),
+  `komentar` text NOT NULL,
+  `foto_bukti` varchar(255) DEFAULT NULL,
+  `balasan_mitra` text DEFAULT NULL,
+  `dibalas_at` timestamp NULL DEFAULT NULL,
+  `is_disembunyikan` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `ulasan_lokasi`
+--
+
+INSERT INTO `ulasan_lokasi` (`id`, `lokasi_id`, `user_id`, `rating`, `komentar`, `foto_bukti`, `balasan_mitra`, `dibalas_at`, `is_disembunyikan`, `created_at`, `updated_at`) VALUES
+(1, 1, 4, 5, 'Pelayanan penimbangan cepat dan transparan, harga botol PET dan kaleng sesuai dengan yang tertera di aplikasi.', NULL, 'Terima kasih Mas Andi sudah rutin memilah sampah dari rumah!', '2026-11-21 01:15:00', 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(2, 1, 5, 4, 'Tempatnya bersih dan rapi, hanya saja kalau hari Sabtu pagi antreannya lumayan ramai.', NULL, NULL, NULL, 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 2, 4, 5, 'Benar-benar dapat diskon 15% pas bawa tumbler sendiri, kopinya juga enak dan tidak pakai sedotan plastik.', NULL, 'Ditunggu kedatangan berikutnya bawa tumbler andalan ya!', '2026-11-22 08:40:00', 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 3, 5, 5, 'Pilihan pakaian preloved-nya bersih dan terkurasi rapi, bawa totebag sendiri langsung dipotong Rp 5.000.', NULL, NULL, NULL, 0, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `email` varchar(120) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `no_hp` varchar(20) DEFAULT NULL,
+  `role` enum('warga','mitra','admin') NOT NULL DEFAULT 'warga',
+  `avatar` varchar(255) DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `nama`, `email`, `password`, `no_hp`, `role`, `avatar`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'Admin EcoMaps Madiun', 'admin@ecomaps.id', '$2y$12$0EQs3qU2YA.1JA/rzWECBO6.mxJ4Wj.7y/2A51fBTH/6sNRNoCwx2', '081234560001', 'admin', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 10:11:46'),
+(2, 'Budi Santoso (Mitra Bank Sampah)', 'budi.mitra@ecomaps.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234560002', 'mitra', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(3, 'Siti Rahmawati (Mitra Zero-Waste)', 'siti.mitra@ecomaps.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234560003', 'mitra', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(4, 'Andi Pratama', 'andi.warga@ecomaps.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234560004', 'warga', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21'),
+(5, 'Nadia Putri', 'nadia.warga@ecomaps.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '081234560005', 'warga', NULL, 1, '2026-11-24 15:16:21', '2026-11-24 15:16:21');
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `favorit_lokasi`
+--
+ALTER TABLE `favorit_lokasi`
+  ADD PRIMARY KEY (`user_id`,`lokasi_id`),
+  ADD KEY `fk_favorit_lokasi` (`lokasi_id`);
+
+--
+-- Indexes for table `foto_lokasi`
+--
+ALTER TABLE `foto_lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_foto_lokasi` (`lokasi_id`);
+
+--
+-- Indexes for table `jenis_sampah`
+--
+ALTER TABLE `jenis_sampah`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `kode_sampah` (`kode_sampah`),
+  ADD KEY `idx_jenis_kelompok` (`kelompok`);
+
+--
+-- Indexes for table `kategori_lokasi`
+--
+ALTER TABLE `kategori_lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`);
+
+--
+-- Indexes for table `konten_edukasi`
+--
+ALTER TABLE `konten_edukasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `fk_edukasi_penulis` (`penulis_id`),
+  ADD KEY `idx_edukasi_publish` (`is_published`);
+
+--
+-- Indexes for table `laporan_lokasi`
+--
+ALTER TABLE `laporan_lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_laporan_lokasi` (`lokasi_id`),
+  ADD KEY `fk_laporan_pelapor` (`pelapor_id`),
+  ADD KEY `idx_laporan_status` (`status_penanganan`);
+
+--
+-- Indexes for table `lokasi`
+--
+ALTER TABLE `lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `fk_lokasi_mitra` (`mitra_id`),
+  ADD KEY `fk_lokasi_kategori` (`kategori_id`),
+  ADD KEY `fk_lokasi_verifier` (`verified_by`),
+  ADD KEY `idx_lokasi_verifikasi` (`status_verifikasi`),
+  ADD KEY `idx_lokasi_kecamatan` (`kecamatan`),
+  ADD KEY `idx_lokasi_koordinat` (`latitude`,`longitude`);
+
+--
+-- Indexes for table `promo_eco`
+--
+ALTER TABLE `promo_eco`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_promo_lokasi` (`lokasi_id`),
+  ADD KEY `idx_promo_aktif` (`is_aktif`,`tanggal_selesai`);
+
+--
+-- Indexes for table `riwayat_verifikasi`
+--
+ALTER TABLE `riwayat_verifikasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_verifikasi_lokasi` (`lokasi_id`),
+  ADD KEY `fk_verifikasi_admin` (`admin_id`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
+-- Indexes for table `tarif_lokasi`
+--
+ALTER TABLE `tarif_lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_lokasi_sampah` (`lokasi_id`,`jenis_sampah_id`),
+  ADD KEY `fk_tarif_jenis` (`jenis_sampah_id`);
+
+--
+-- Indexes for table `ulasan_lokasi`
+--
+ALTER TABLE `ulasan_lokasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_ulasan_user_lokasi` (`lokasi_id`,`user_id`),
+  ADD KEY `fk_ulasan_user` (`user_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idx_users_role` (`role`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `foto_lokasi`
+--
+ALTER TABLE `foto_lokasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `jenis_sampah`
+--
+ALTER TABLE `jenis_sampah`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `kategori_lokasi`
+--
+ALTER TABLE `kategori_lokasi`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `konten_edukasi`
+--
+ALTER TABLE `konten_edukasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `laporan_lokasi`
+--
+ALTER TABLE `laporan_lokasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `lokasi`
+--
+ALTER TABLE `lokasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `promo_eco`
+--
+ALTER TABLE `promo_eco`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `riwayat_verifikasi`
+--
+ALTER TABLE `riwayat_verifikasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `tarif_lokasi`
+--
+ALTER TABLE `tarif_lokasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `ulasan_lokasi`
+--
+ALTER TABLE `ulasan_lokasi`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `favorit_lokasi`
+--
+ALTER TABLE `favorit_lokasi`
+  ADD CONSTRAINT `fk_favorit_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_favorit_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `foto_lokasi`
+--
+ALTER TABLE `foto_lokasi`
+  ADD CONSTRAINT `fk_foto_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `konten_edukasi`
+--
+ALTER TABLE `konten_edukasi`
+  ADD CONSTRAINT `fk_edukasi_penulis` FOREIGN KEY (`penulis_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `laporan_lokasi`
+--
+ALTER TABLE `laporan_lokasi`
+  ADD CONSTRAINT `fk_laporan_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_laporan_pelapor` FOREIGN KEY (`pelapor_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `lokasi`
+--
+ALTER TABLE `lokasi`
+  ADD CONSTRAINT `fk_lokasi_kategori` FOREIGN KEY (`kategori_id`) REFERENCES `kategori_lokasi` (`id`),
+  ADD CONSTRAINT `fk_lokasi_mitra` FOREIGN KEY (`mitra_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `fk_lokasi_verifier` FOREIGN KEY (`verified_by`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `promo_eco`
+--
+ALTER TABLE `promo_eco`
+  ADD CONSTRAINT `fk_promo_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `riwayat_verifikasi`
+--
+ALTER TABLE `riwayat_verifikasi`
+  ADD CONSTRAINT `fk_verifikasi_admin` FOREIGN KEY (`admin_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `fk_verifikasi_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tarif_lokasi`
+--
+ALTER TABLE `tarif_lokasi`
+  ADD CONSTRAINT `fk_tarif_jenis` FOREIGN KEY (`jenis_sampah_id`) REFERENCES `jenis_sampah` (`id`),
+  ADD CONSTRAINT `fk_tarif_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `ulasan_lokasi`
+--
+ALTER TABLE `ulasan_lokasi`
+  ADD CONSTRAINT `fk_ulasan_lokasi` FOREIGN KEY (`lokasi_id`) REFERENCES `lokasi` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_ulasan_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 

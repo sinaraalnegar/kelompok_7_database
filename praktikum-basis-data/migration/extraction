@@ -1,3 +1,4 @@
+```
 "id","nama","email","password","no_hp","role","avatar","is_active","created_at","updated_at"
 "1","Admin EcoMaps Madiun","admin@ecomaps.id","$2y$12$0EQs3qU2YA.1JA/rzWECBO6.mxJ4Wj.7y/2A51fBTH/6sNRNoCwx2","081234560001","admin",NULL,"1","2026-11-24 22:16:21","2026-11-24 17:11:46"
 "2","Budi Santoso (Mitra Bank Sampah)","budi.mitra@ecomaps.id","$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi","081234560002","mitra",NULL,"1","2026-11-24 22:16:21","2026-11-24 22:16:21"
@@ -17,4 +18,4 @@
 "2","Kafe & Toko Zero-Waste","zero-waste-store","marker-leaf-emerald","Kedai atau toko curah yang mendukung penggunaan wadah guna ulang dan diskon tumbler.","2026-11-24 22:16:21","2026-11-24 22:16:21"
 "3","Thrift Shop & Preloved","thrift-shop","marker-hanger-amber","Toko pakaian dan barang bekas layak pakai untuk mendukung fesyen berkelanjutan.","2026-11-24 22:16:21","2026-11-24 22:16:21"
 "4","Drop Box E-Waste & Jelantah","drop-box-ewaste","marker-bolt-blue","Titik pengumpulan khusus minyak jelantah dan limbah elektronik kecil.","2026-11-24 22:16:21","2026-11-24 22:16:21"
-
+```
